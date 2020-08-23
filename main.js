@@ -21,6 +21,11 @@ async function main () {
     const tasks = files.map(rewriteDate);
 
     await Promise.all(tasks);
+
+    dialog.showMessageBoxSync({
+        type: 'info',
+        message: `Das Datum von ${files.length} Dateien wurde erfolgreich gewartet! ✅`
+    });
 }
 
 async function rewriteDate (file) {
@@ -34,6 +39,11 @@ function quit (app) {
         .then(() => app.quit())
         .catch(error => {
             console.error(error);
+            dialog.showMessageBoxSync({
+                type: 'error',
+                message: `${error.message} ⚠️`
+            });
+
             app.quit();
         });
 }
