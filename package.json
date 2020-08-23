@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-packager . \"Datum Wartung\" --out=dist --overwrite --ignore=\"(.git|.idea|yarn.lock|package.json|dist|.DS_Store|README.md|LICENSE|.gitignore)\""
+    "dist": "electron-packager . \"Datum Wartung\" --out=dist --overwrite"
   },
   "dependencies": {
     "exiftool-vendored": "12.0.0"
