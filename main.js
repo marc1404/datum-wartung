@@ -24,7 +24,7 @@ async function main () {
 
     dialog.showMessageBoxSync({
         type: 'info',
-        message: `Das Datum von ${files.length} Dateien wurde erfolgreich gewartet! ✅`
+        message: `Das Datum von ${files.length} Dateien wurde erfolgreich gewartet! 🤗 ✅`
     });
 }
 
@@ -41,7 +41,7 @@ function quit (app) {
             console.error(error);
             dialog.showMessageBoxSync({
                 type: 'error',
-                message: `${error.message} ⚠️`
+                message: `${error.message} 😰 ⚠️ `
             });
 
             app.quit();
