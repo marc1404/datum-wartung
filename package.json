@@ -8,6 +8,7 @@
     "dist": "electron-packager . \"Datum Wartung\" --out=dist --overwrite --icon=assets/icon.icns"
   },
   "dependencies": {
+    "electron-progressbar": "1.2.0",
     "exiftool-vendored": "12.0.0"
   },
   "devDependencies": {

@@ -2,6 +2,7 @@ const { app, dialog } = require('electron');
 const exiftool = require('exiftool-vendored').exiftool;
 const fs = require('fs');
 const path = require('path');
+const ProgressBar = require('electron-progressbar');
 
 async function main () {
     const selectedDirectories = dialog.showOpenDialogSync({ properties: ['openDirectory'] });
@@ -18,9 +19,21 @@ async function main () {
         .filter(file => file !== '.DS_Store')
         .map(file => path.join(directory, file));
 
-    const tasks = files.map(rewriteDate);
+    const progressBar = new ProgressBar({
+        title: 'Datum Wartung',
+        text: 'Bitte warten...',
+        detail: `0/${files.length} - 0%`,
+        indeterminate: false,
+        browserWindow: {
+            webPreferences: {
+                nodeIntegration: true
+            }
+        }
+    });
 
-    await Promise.all(tasks);
+    await rewriteDateOfFiles(files, progressBar);
+
+    progressBar.text = 'Fertig!';
 
     dialog.showMessageBoxSync({
         type: 'info',
@@ -28,10 +41,29 @@ async function main () {
     });
 }
 
+async function rewriteDateOfFiles (files, progressBar) {
+    let finishedCount = 0;
+
+    const tasks = files.map(async (file) => {
+        await rewriteDate(file);
+
+        finishedCount++;
+        progressBar.value = Math.floor(finishedCount / files.length * 100);
+        progressBar.detail = `${finishedCount}/${files.length} - ${progressBar.value}%`;
+    });
+
+    await Promise.all(tasks);
+}
+
 async function rewriteDate (file) {
     const tags = await exiftool.read(file);
+    const { DateTimeOriginal: dateTimeOriginal } = tags;
 
-    await exiftool.write(file, { FileModifyDate: tags.DateTimeOriginal }, ['-overwrite_original', '-stay_open']);
+    if (!dateTimeOriginal) {
+        return;
+    }
+
+    await exiftool.write(file, { FileModifyDate: dateTimeOriginal }, ['-overwrite_original']);
 }
 
 function quit (app) {
