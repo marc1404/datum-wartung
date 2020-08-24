@@ -1,3 +1,7 @@
+const Sentry = require('@sentry/electron');
+
+Sentry.init({ dsn: "https://d7e55365ea1f4fea88dd087a200fce2d@o103802.ingest.sentry.io/5403025" });
+
 const { app, dialog } = require('electron');
 const exiftool = require('exiftool-vendored').exiftool;
 const fs = require('fs');
