@@ -31,7 +31,7 @@ async function main () {
 async function rewriteDate (file) {
     const tags = await exiftool.read(file);
 
-    await exiftool.write(file, { FileModifyDate: tags.DateTimeOriginal }, ['-overwrite_original']);
+    await exiftool.write(file, { FileModifyDate: tags.DateTimeOriginal }, ['-overwrite_original', '-stay_open']);
 }
 
 function quit (app) {
