@@ -7,6 +7,7 @@ const exiftool = require('exiftool-vendored').exiftool;
 const fs = require('fs');
 const path = require('path');
 const ProgressBar = require('electron-progressbar');
+const isImage = require('is-image');
 
 async function main () {
     const selectedDirectories = dialog.showOpenDialogSync({ properties: ['openDirectory'] });
@@ -17,16 +18,16 @@ async function main () {
 
     const [directory] = selectedDirectories;
     const directoryEntries = fs.readdirSync(directory, { withFileTypes: true });
-    const files = directoryEntries
-        .filter(entry => entry.isFile())
-        .map(file => file.name)
-        .filter(file => file !== '.DS_Store')
-        .map(file => path.join(directory, file));
+    const fileEntries = directoryEntries.filter(entry => entry.isFile());
+    const fileNames = fileEntries.map(fileEntry => fileEntry.name);
+    const imageFileNames = fileNames.filter(fileName => isImage(fileName));
+    const imageFilePaths = imageFileNames.map(imageFileName => path.join(directory, imageFileName));
+    const imageCount = imageFilePaths.length;
 
     const progressBar = new ProgressBar({
         title: 'Datum Wartung',
         text: 'Bitte warten...',
-        detail: `0/${files.length} - 0%`,
+        detail: `0/${imageCount} - 0%`,
         indeterminate: false,
         browserWindow: {
             webPreferences: {
@@ -35,13 +36,13 @@ async function main () {
         }
     });
 
-    await rewriteDateOfFiles(files, progressBar);
+    await rewriteDateOfFiles(imageFilePaths, progressBar);
 
     progressBar.text = 'Fertig!';
 
     dialog.showMessageBoxSync({
         type: 'info',
-        message: `Das Datum von ${files.length} Dateien wurde erfolgreich gewartet! 🤗 ✅`
+        message: `Das Datum von ${imageCount} Dateien wurde erfolgreich gewartet! 🤗 ✅`
     });
 }
 
