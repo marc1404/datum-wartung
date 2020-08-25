@@ -5,7 +5,12 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-packager . \"Datum Wartung\" --out=dist --overwrite --icon=assets/icon.icns"
+    "dist": "electron-packager . \"Datum Wartung\" --out=dist --overwrite --icon=assets/icon.icns",
+    "upgrades": "yarn upgrade-interactive --latest"
+  },
+  "engines": {
+    "node": ">=12.0.0",
+    "yarn": ">=1.22.0"
   },
   "dependencies": {
     "@sentry/electron": "2.0.0",
